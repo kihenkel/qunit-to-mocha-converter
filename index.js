@@ -4,6 +4,9 @@ const replacements = require('./replacements');
 const replace = require('./replace');
 const convertHooks = require('./convertHooks');
 const convertBeforeAfterEachs = require('./convertBeforeAfterEachs');
+const returnPromises = require('./returnPromises');
+const removeObsoleteLines = require('./removeObsoleteLines');
+const addImports = require('./addImports');
 
 const allTestFiles = require('./input/test-files.json');
 
@@ -18,6 +21,9 @@ Promise.all(promises)
   .then(fileContents => fileContents.map(fileContent => convertHooks(fileContent).join('')))
   .then(fileContents => fileContents.map(fileContent => replace(fileContent, replacements)))
   .then(fileContents => fileContents.map(fileContent => convertBeforeAfterEachs(fileContent).join('')))
+  .then(fileContents => fileContents.map(fileContent => returnPromises(fileContent).join('')))
+  .then(fileContents => fileContents.map(removeObsoleteLines))
+  .then(fileContents => fileContents.map(addImports))
   .then(fileContents => {
     fileContents.forEach((fileContent, index) => {
       const fileToWrite = `results/${allTestFiles[index].name}_${new Date().toISOString().substr(0, 19).replace(/[T\:]/g, '-')}.json`;
