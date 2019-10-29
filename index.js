@@ -1,5 +1,5 @@
-const util = require('util');
 const fs = require('fs');
+const path = require('path');
 const replacements = require('./replacements');
 const replace = require('./replace');
 const convertHooks = require('./convertHooks');
@@ -10,26 +10,26 @@ const addImports = require('./addImports');
 
 const allTestFiles = require('./input/test-files.json');
 
-const readFile = util.promisify(fs.readFile);
-
-const promises = allTestFiles.map(async (file) => {
-  const fileContentRaw = await readFile(file.fullPath);
-  const fileContent = fileContentRaw.toString();
-  return fileContent;
+allTestFiles.forEach(file => {
+  Promise.resolve()
+    .then(() => {
+      console.log(`Starting to convert '${file.name}' ...`);
+      return fs.readFileSync(path.normalize(file.fullPath));
+    })
+    .then(fileContentRaw => fileContentRaw.toString())
+    .then(fileContent => convertHooks(fileContent).join(''))
+    .then(fileContent => replace(fileContent, replacements))
+    .then(fileContent => convertBeforeAfterEachs(fileContent).join(''))
+    .then(fileContent => returnPromises(fileContent).join(''))
+    .then(removeObsoleteLines)
+    .then(addImports)
+    .then(fileContent => {
+      console.log(`Finished converting '${file.name}'! Saving to file ...`);
+      const normalizedPath = path.normalize(file.fullPath);
+      fs.writeFileSync(normalizedPath, fileContent, 'utf8');
+      console.log(`Succesfully saved '${normalizedPath}'!`);
+    })
+    .catch(error => {
+      console.error('ERROR', error);
+    })
 });
-Promise.all(promises)
-  .then(fileContents => fileContents.map(fileContent => convertHooks(fileContent).join('')))
-  .then(fileContents => fileContents.map(fileContent => replace(fileContent, replacements)))
-  .then(fileContents => fileContents.map(fileContent => convertBeforeAfterEachs(fileContent).join('')))
-  .then(fileContents => fileContents.map(fileContent => returnPromises(fileContent).join('')))
-  .then(fileContents => fileContents.map(removeObsoleteLines))
-  .then(fileContents => fileContents.map(addImports))
-  .then(fileContents => {
-    fileContents.forEach((fileContent, index) => {
-      const fileToWrite = `results/${allTestFiles[index].name}_${new Date().toISOString().substr(0, 19).replace(/[T\:]/g, '-')}.json`;
-      fs.writeFileSync(fileToWrite, fileContent, 'utf8'); 
-    });
-  })
-  .catch(error => {
-    console.error('ERROR', error);
-  })

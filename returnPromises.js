@@ -3,7 +3,7 @@ const matchRecursive = require('./matchRecursive');
 const thenRegex = /\.then\s*\(/;
 const thenOwnLineRegex = /\s\.then\s*\(/;
 
-const returnsNeededAt = [];
+let returnsNeededAt = [];
 const convert = (element, index) => {
   const foundThen = element.match(new RegExp(thenRegex));
   if (foundThen) {
@@ -17,6 +17,7 @@ const convert = (element, index) => {
 };
 
 const convertAll = (fileContent) => {
+  returnsNeededAt = [];
   const elements = matchRecursive(fileContent, /\n/);
   const results = elements.map(convert);
   returnsNeededAt.forEach(returnNeededAt => {
