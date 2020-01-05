@@ -1,6 +1,6 @@
 const matchRecursive = require('./matchRecursive');
 
-const matchRegex = /(?:(?:before|after)[a-zA-Z\:\s]*\s*\([^\)]*\)\s*(?:=>)?\s*\{)/;
+const matchRegex = /(?:(?:before|after)\s*[a-zA-Z]{0,4}\s*:?\s*\([^\)]*\)\s*(?:=>)?\s*\{)/;
 const replaceRegex = /((?:before|after)[a-zA-Z]*)[a-zA-Z\:\s]*\s*\([^\)]*\)\s*(?:=>)?\s*\{/;
 
 const matchOpen = /{/;
@@ -31,7 +31,7 @@ const convert = (element) => {
 };
 
 const convertAll = (fileContent) => {
-  const elements = matchRecursive(fileContent, /(?:(?:before|after)[a-zA-Z\:\s]*\s*\([^\)]*\)\s*(?:=>)?\s*\{)|{|},?/);
+  const elements = matchRecursive(fileContent, /(?:(?:before|after)\s*[a-zA-Z]{0,4}\s*:?\s*\([^\)]*\)\s*(?:=>)?\s*\{)|{|},?/);
   return elements.map(convert);
 };
 

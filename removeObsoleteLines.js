@@ -1,6 +1,7 @@
 const OBSOLETE_LINES = [
   /(?:const|let|var)\s+done\s*=\s*assert\.async\(.*\)\s*;\s*/g,
   /\s*done\s*\(\s*\)\s*;/g,
+  /\s*setTimeout\s*\(.*done.*\);?/g,
   /\s*\.then\s*\(\s*assert\.async\s*\(\s*\)\s*\)\s*/g,
   /\s*assert\.expect\s*\(.+\);?/g,
 ];
