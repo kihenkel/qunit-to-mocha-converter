@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const replacements = require('./replacements');
 const replace = require('./replace');
+const convertAssertions = require('./convertAssertions');
 const convertHooks = require('./convertHooks');
 const convertBeforeAfterEachs = require('./convertBeforeAfterEachs');
 const returnPromises = require('./returnPromises');
@@ -18,6 +19,7 @@ allTestFiles.forEach(file => {
     })
     .then(fileContentRaw => fileContentRaw.toString())
     .then(fileContent => convertHooks(fileContent).join(''))
+    .then(fileContent => convertAssertions(fileContent).join(''))
     .then(fileContent => replace(fileContent, replacements))
     .then(fileContent => convertBeforeAfterEachs(fileContent).join(''))
     .then(fileContent => returnPromises(fileContent).join(''))
