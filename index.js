@@ -18,9 +18,9 @@ allTestFiles.forEach(file => {
       return fs.readFileSync(path.normalize(file.fullPath));
     })
     .then(fileContentRaw => fileContentRaw.toString())
+    .then(fileContent => replace(fileContent, replacements))
     .then(fileContent => convertHooks(fileContent).join(''))
     .then(fileContent => convertAssertions(fileContent).join(''))
-    .then(fileContent => replace(fileContent, replacements))
     .then(fileContent => convertBeforeAfterEachs(fileContent).join(''))
     .then(fileContent => returnPromises(fileContent).join(''))
     .then(removeObsoleteLines)
