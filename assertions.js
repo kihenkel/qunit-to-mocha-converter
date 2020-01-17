@@ -1,6 +1,6 @@
 const assertionMap = {
-  'ok': (args) => `expect(${args[0]}).to.exist;`,
-  'notOk': (args) => `expect(${args[0]}).to.not.exist;`,
+  'ok': (args) => `expect(${args[0]}).to.be.ok;`,
+  'notOk': (args) => `expect(${args[0]}).to.not.be.ok;`,
   'equal': (args) => `expect(${args[0]}).to.equal(${args[1]});`,
   'strictEqual': (args) => `expect(${args[0]}).to.equal(${args[1]});`,
   'notEqual': (args) => `expect(${args[0]}).to.not.equal(${args[1]});`,
